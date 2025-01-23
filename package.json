@@ -11,12 +11,20 @@
     "watch": "watch 'npm run build' ./src",
     "prepublish": "npm run build"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/coatpont/eslint-plugin-twig.git"
+  },
   "keywords": [
     "eslint",
     "eslintplugin",
     "twig",
     "template"
   ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/coatpont/eslint-plugin-twig.git/issues"
+  },
   "author": "Bertrand de Coatpont <bertrand.decoatpont@gmail.com>",
   "devDependencies": {
     "@babel/cli": "^7.16.7",
