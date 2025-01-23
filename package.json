@@ -1,0 +1,35 @@
+{
+  "name": "eslint-plugin-twig",
+  "version": "0.0.1",
+  "description": "This plugin treats Twig template expressions as Javascript literals and ignores template statements and comments.",
+  "main": "lib/index.js",
+  "scripts": {
+    "lint": "npx eslint 'src/**/*.js' --max-warnings=0",
+    "lint:fix": "npx eslint 'src/**/*.js' --max-warnings=0 --fix",
+    "test": "npm test",
+    "build": "babel src --out-dir lib",
+    "watch": "watch 'npm run build' ./src",
+    "prepublish": "npm run build"
+  },
+  "keywords": [
+    "eslint",
+    "eslintplugin",
+    "twig",
+    "template"
+  ],
+  "author": "Bertrand de Coatpont <bertrand.decoatpont@gmail.com>",
+  "devDependencies": {
+    "@babel/cli": "^7.16.7",
+    "@babel/core": "^7.25.2",
+    "@babel/eslint-parser": "^7.25.1",
+    "@babel/plugin-transform-runtime": "^7.16.7",
+    "@babel/preset-env": "^7.25.4",
+    "eslint": "^8.6.0",
+    "eslint-plugin-eslint-plugin": "^6.4.0",
+    "glob": "^7.2.0",
+    "watch": "^1.0.2"
+  },
+  "peerDependencies": {
+    "eslint": "^8.24.0"
+  }
+}
