@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-twig",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "This plugin treats Twig template expressions as Javascript literals and ignores template statements and comments.",
   "main": "lib/index.js",
   "scripts": {
@@ -35,7 +35,7 @@
     "eslint": "^8.6.0",
     "eslint-plugin-eslint-plugin": "^6.4.0",
     "glob": "^7.2.0",
-    "watch": "^1.0.3"
+    "watch": "^1.0.2"
   },
   "peerDependencies": {
     "eslint": "^8.24.0"
