@@ -1,0 +1,26 @@
+{% extends 'body.html.twig' %}
+
+{% block title %} {{ 'some.message' }} {{'othernospace.message'}} {{'othersomespace.message' }} {% endblock %}
+{% block contentbody %}
+<div class="content-wrapper">
+    <span>HTML content goes there</span>
+</div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('somelibrary') }}
+    <script>
+        // eslint-plugin-twig debug
+        import someVariable from {{ someCalculatedPath }};
+        import { someVariable1, someVariable2 } from {{ someOtherCalculatedPath }};
+    </script>
+    <script>
+        console.log('hello world');
+        text = '{{ someText }}';
+        globalFunction("{{'message1'}}", "{{'message2'}}", "text");
+        {% include('otherTemplate.js.twig') %}
+        {{ include('includedTemplate.js.twig') }}
+        {% set header = include('header.html') %}
+    </script>
+{% endblock %}
+

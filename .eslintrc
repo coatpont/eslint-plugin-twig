@@ -1,6 +1,0 @@
-{
-  "extends": ["plugin:eslint-plugin/recommended"],
-  "rules": {
-    "eslint-plugin/require-meta-docs-description": "error"
-  }
-}
