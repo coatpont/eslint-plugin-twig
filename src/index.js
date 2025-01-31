@@ -4,7 +4,7 @@ let uniqueCounter = 0; // Counter to help generate unique IDs
 module.exports = {
   meta: {
     name: "eslint-plugin-twig",
-    version: "0.0.9",
+    version: "0.0.11",
   },
   processors: {
     ".twig": {
@@ -29,14 +29,17 @@ module.exports = {
         );
 
         // Handling {{ '{{' }} and {{ '}}' }} exact matchs, rare case but possible in Twig
-        sanitizedText = sanitizedText.replace(/\{\{\s*'{{'\s*\}\}|\{\{\s*'}}'\s*\}\}/g, (str) => {
-          const replacementLength = str.length - 2; // Adjusting for the length of '{{' and '}}'
-          uniqueCounter++; // Incrementing the counter for uniqueness
-          const uniqueID = uniqueCounter
-            .toString()
-            .padStart(replacementLength, "0");
-          return "/" + uniqueID + "/"; // Using slashes to encapsulate the unique ID
-        });
+        sanitizedText = sanitizedText.replace(
+          /\{\{\s*'{{'\s*\}\}|\{\{\s*'}}'\s*\}\}/g,
+          (str) => {
+            const replacementLength = str.length - 2; // Adjusting for the length of '{{' and '}}'
+            uniqueCounter++; // Incrementing the counter for uniqueness
+            const uniqueID = uniqueCounter
+              .toString()
+              .padStart(replacementLength, "0");
+            return "/" + uniqueID + "/"; // Using slashes to encapsulate the unique ID
+          },
+        );
 
         // Handling {{ variable }} expressions, ignoring escaped '{{' and '}}'
         sanitizedText = sanitizedText.replace(/\{\{(.*?)\}\}/g, (str) => {
