@@ -16,11 +16,14 @@
     </script>
     <script>
         console.log('hello world');
-        text = '{{ someText }}';
+        var text = '{{ someText }}';
         globalFunction("{{'message1'}}", "{{'message2'}}", "text");
         {% include('otherTemplate.js.twig') %}
         {{ include('includedTemplate.js.twig') }}
         {% set header = include('header.html') %}
+        var complexCase = '{{ 'action.noResultsForQuery'|trans }} "{{ '{{' }}query{{ '}}' }}"';
+        var completeFunction = someFunciton('href', '{{ path('del_sacrement',{id:sacrement.id}) }}');
+
     </script>
 {% endblock %}
 
