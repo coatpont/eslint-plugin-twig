@@ -4,7 +4,7 @@ let uniqueCounter = 0; // Counter to help generate unique IDs
 module.exports = {
   meta: {
     name: "eslint-plugin-twig",
-    version: "0.0.12",
+    version: "0.0.13",
   },
   processors: {
     ".twig": {
@@ -38,6 +38,32 @@ module.exports = {
               .toString()
               .padStart(replacementLength, "0");
             return "/" + uniqueID + "/"; // Using slashes to encapsulate the unique ID
+          },
+        );
+
+        // Handling {% if ... %} ... {% endif %} expressions on single lines, replacing with unique ID placeholders
+        sanitizedText = sanitizedText.replace(
+          /\{%\s*if .*?%\}.*?\{%\s*endif\s*%\}/g,
+          (str) => {
+            const replacementLength = str.length; // Keep the full length of the matched string
+            uniqueCounter++; // Incrementing the counter for uniqueness
+            const uniqueID = uniqueCounter
+              .toString()
+              .padStart(replacementLength - 2, "0");
+            return "/" + uniqueID + "/"; // Using slashes to encapsulate the unique ID, mimicking the style used for {{ variable }}
+          },
+        );
+
+        // Handling {% for ... %} ... {% endfor %} expressions on single lines, replacing with unique ID placeholders
+        sanitizedText = sanitizedText.replace(
+          /\{%\s*for .*?%\}.*?\{%\s*endfor\s*%\}/g,
+          (str) => {
+            const replacementLength = str.length; // Keep the full length of the matched string
+            uniqueCounter++; // Incrementing the counter for uniqueness
+            const uniqueID = uniqueCounter
+              .toString()
+              .padStart(replacementLength - 2, "0");
+            return "/" + uniqueID + "/"; // Using slashes to encapsulate the unique ID, mimicking the style used for other Twig blocks
           },
         );
 
