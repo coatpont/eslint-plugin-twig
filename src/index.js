@@ -4,7 +4,7 @@ let uniqueCounter = 0; // Counter to help generate unique IDs
 module.exports = {
   meta: {
     name: "eslint-plugin-twig",
-    version: "0.0.13",
+    version: "0.0.14",
   },
   processors: {
     ".twig": {
