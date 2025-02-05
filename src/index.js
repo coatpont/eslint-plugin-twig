@@ -4,7 +4,7 @@ let uniqueCounter = 0; // Counter to help generate unique IDs
 module.exports = {
   meta: {
     name: "eslint-plugin-twig",
-    version: "0.0.14",
+    version: "0.0.15",
   },
   processors: {
     ".twig": {
@@ -22,7 +22,7 @@ module.exports = {
 
         // Escaping {{ include( ... ) }}
         sanitizedText = sanitizedText.replace(
-          /\{\{\s*include.*?\}\}/g,
+          /\{\{\s*(include|parent).*?\}\}/g,
           function (match) {
             return "/* " + match.slice(2, -2).trim() + " */"; // Extracts the content within '{{' and '}}', trims it, and wraps it in block comments
           },
