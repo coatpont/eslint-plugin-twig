@@ -1,10 +1,11 @@
+const { name, version } = require('../package.json');
 const fileContentMap = new Map();
 let uniqueCounter = 0; // Counter to help generate unique IDs
 
 module.exports = {
   meta: {
-    name: "eslint-plugin-twig",
-    version: "0.0.15",
+    name: name,
+    version: version,
   },
   processors: {
     ".twig": {
@@ -117,7 +118,7 @@ module.exports = {
 
         // Are we debugging?
         if (text.includes("// eslint-plugin-twig debug")) {
-          console.log(filename + "\n" + sanitizedText); // eslint-disable-line no-console
+          console.log(filename + "\n" + sanitizedText);
         }
 
         return [sanitizedText];

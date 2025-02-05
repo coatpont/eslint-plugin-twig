@@ -25,8 +25,8 @@
         var completeFunction = someFunciton('href', '{{ path('del_sacrement',{id:sacrement.id}) }}');
         var anotherComplexCase = function (data, type, row, meta) {
             return type === someCondition ?
-                '<a href="/personne/' + row.id + '"><span title="' + data + '">' + data.substr(0, 30) + '...</span></a><a class="pl-2 modal-details-personne" data-id-personne="' + row.id + '"><i class="fa-solid fa-eye font-small-3"></i></a> {% if is_granted('ROLE_EDIT_ALL_PERSONNES', app.user.entiteActive) %} <a class="warning ml-1" href="/personne/edit/' + row.id + '"><i class="fa-solid fa-user-pen font-small-3"></i></a>{% endif %}' :
-                '<a href="/personne/' + row.id + '">' + data + '</a><a class="pl-2 modal-details-personne" data-id-personne="' + row.id + '"><i class="fa-solid fa-eye font-small-3"></i></a>{% if is_granted('ROLE_EDIT_ALL_PERSONNES', app.user.entiteActive) %} <a class="warning ml-1" href="/personne/edit/' + row.id + '"><i class="fa-solid fa-user-pen font-small-3"></i></a>{% endif %}';
+                '<a href="/link/' + id + '"><span title="' + data + '">' + '...</span></a><a class="someclass" data-id="' + row.id + '"><i class="someclass"></i></a> {% if someCondition %} <a class="someclass" href="/link/' + id + '"><i class="someclass"></i></a>{% endif %}' :
+                '<a href="/link/' + id + '">' + data + '</a><a class="someclass" data-id="' + row.id + '"><i class="someclass"></i></a>{% if someCondition %} <a class="someclass" href="/link/' + id + '"><i class="someclass"></i></a>{% endif %}';
         };
 
     </script>
