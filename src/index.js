@@ -1,119 +1,106 @@
-const { name, version } = require('../package.json');
-const fileContentMap = new Map();
-let uniqueCounter = 0; // Counter to help generate unique IDs
+"use strict";
+
+var _require = require('../package.json');
+
+// Depending on the version of ESLint, the processor name will vary
+const eslintPackageJson = require("eslint/package.json");
+const eslintVersion = eslintPackageJson.version;
+function parseVersion(version) {
+  const [major, minor, patch] = version.split('.').map(Number);
+  return { major, minor, patch };
+}
+
+const { major } = parseVersion(eslintVersion);
+let processorName = 'twig';
+if (major <= 8) {
+  processorName = '.twig';
+}
+
+var name = _require.name;
+var version = _require.version;
+
+var fileContentMap = new Map();
+var uniqueCounter = 0; // Counter to help generate unique IDs
 
 module.exports = {
   meta: {
     name: name,
-    version: version,
+    version: version
   },
   processors: {
-    ".twig": {
-      preprocess(text, filename) {
+    [processorName]: {
+      preprocess: function preprocess(text, filename) {
         // Handling specific import expressions using {{ }}
-        var sanitizedText = text.replace(
-          /import\s+({\s*[\w\s,]+\s*}|\w+)\s+from\s+{{\s*(.*?)\s*}}/g,
-          function (match, variables, originalContent) {
-            const originalContentLength = originalContent.length + 4; // Include the length of '{{' and '}}' (2 characters each) and 2 for the quotes
-            const padding = "0".repeat(originalContentLength);
+        var sanitizedText = text.replace(/import\s+({\s*[\w\s,]+\s*}|\w+)\s+from\s+{{\s*(.*?)\s*}}/g, function (match, variables, originalContent) {
+          var originalContentLength = originalContent.length + 4; // Include the length of '{{' and '}}' (2 characters each) and 2 for the quotes
+          var padding = "0".repeat(originalContentLength);
 
-            return `import ${variables} from '${padding}'`; // Zeros are within the single quotes
-          },
-        );
+          return "import " + variables + " from '" + padding + "'"; // Zeros are within the single quotes
+        });
 
         // Escaping {{ include( ... ) }}
-        sanitizedText = sanitizedText.replace(
-          /\{\{\s*(include|parent).*?\}\}/g,
-          function (match) {
-            return "/* " + match.slice(2, -2).trim() + " */"; // Extracts the content within '{{' and '}}', trims it, and wraps it in block comments
-          },
-        );
+        sanitizedText = sanitizedText.replace(/\{\{\s*(include|parent).*?\}\}/g, function (match) {
+          return "/* " + match.slice(2, -2).trim() + " */"; // Extracts the content within '{{' and '}}', trims it, and wraps it in block comments
+        });
 
         // Handling {{ '{{' }} and {{ '}}' }} exact matchs, rare case but possible in Twig
-        sanitizedText = sanitizedText.replace(
-          /\{\{\s*'{{'\s*\}\}|\{\{\s*'}}'\s*\}\}/g,
-          (str) => {
-            const replacementLength = str.length - 2; // Adjusting for the length of '{{' and '}}'
-            uniqueCounter++; // Incrementing the counter for uniqueness
-            const uniqueID = uniqueCounter
-              .toString()
-              .padStart(replacementLength, "0");
-            return "/" + uniqueID + "/"; // Using slashes to encapsulate the unique ID
-          },
-        );
+        sanitizedText = sanitizedText.replace(/\{\{\s*'{{'\s*\}\}|\{\{\s*'}}'\s*\}\}/g, function (str) {
+          var replacementLength = str.length - 2; // Adjusting for the length of '{{' and '}}'
+          uniqueCounter++; // Incrementing the counter for uniqueness
+          var uniqueID = uniqueCounter.toString().padStart(replacementLength, "0");
+          return "/" + uniqueID + "/"; // Using slashes to encapsulate the unique ID
+        });
 
         // Handling {% if ... %} ... {% endif %} expressions on single lines, replacing with unique ID placeholders
-        sanitizedText = sanitizedText.replace(
-          /\{%\s*if .*?%\}.*?\{%\s*endif\s*%\}/g,
-          (str) => {
-            const replacementLength = str.length; // Keep the full length of the matched string
-            uniqueCounter++; // Incrementing the counter for uniqueness
-            const uniqueID = uniqueCounter
-              .toString()
-              .padStart(replacementLength - 2, "0");
-            return "/" + uniqueID + "/"; // Using slashes to encapsulate the unique ID, mimicking the style used for {{ variable }}
-          },
-        );
+        sanitizedText = sanitizedText.replace(/\{%\s*if .*?%\}.*?\{%\s*endif\s*%\}/g, function (str) {
+          var replacementLength = str.length; // Keep the full length of the matched string
+          uniqueCounter++; // Incrementing the counter for uniqueness
+          var uniqueID = uniqueCounter.toString().padStart(replacementLength - 2, "0");
+          return "/" + uniqueID + "/"; // Using slashes to encapsulate the unique ID, mimicking the style used for {{ variable }}
+        });
 
         // Handling {% for ... %} ... {% endfor %} expressions on single lines, replacing with unique ID placeholders
-        sanitizedText = sanitizedText.replace(
-          /\{%\s*for .*?%\}.*?\{%\s*endfor\s*%\}/g,
-          (str) => {
-            const replacementLength = str.length; // Keep the full length of the matched string
-            uniqueCounter++; // Incrementing the counter for uniqueness
-            const uniqueID = uniqueCounter
-              .toString()
-              .padStart(replacementLength - 2, "0");
-            return "/" + uniqueID + "/"; // Using slashes to encapsulate the unique ID, mimicking the style used for other Twig blocks
-          },
-        );
+        sanitizedText = sanitizedText.replace(/\{%\s*for .*?%\}.*?\{%\s*endfor\s*%\}/g, function (str) {
+          var replacementLength = str.length; // Keep the full length of the matched string
+          uniqueCounter++; // Incrementing the counter for uniqueness
+          var uniqueID = uniqueCounter.toString().padStart(replacementLength - 2, "0");
+          return "/" + uniqueID + "/"; // Using slashes to encapsulate the unique ID, mimicking the style used for other Twig blocks
+        });
 
         // Handling {{ variable }} expressions, ignoring escaped '{{' and '}}'
-        sanitizedText = sanitizedText.replace(/\{\{(.*?)\}\}/g, (str) => {
-          const replacementLength = str.length - 2; // Adjusting for the length of '{{' and '}}'
+        sanitizedText = sanitizedText.replace(/\{\{(.*?)\}\}/g, function (str) {
+          var replacementLength = str.length - 2; // Adjusting for the length of '{{' and '}}'
           uniqueCounter++; // Incrementing the counter for uniqueness
-          const uniqueID = uniqueCounter
-            .toString()
-            .padStart(replacementLength, "0");
+          var uniqueID = uniqueCounter.toString().padStart(replacementLength, "0");
           return "/" + uniqueID + "/"; // Using slashes to encapsulate the unique ID
         });
 
         // Handling {% %} expressions on single lines, replacing with comment-style placeholders
-        sanitizedText = sanitizedText.replace(/\{%([^\r\n]*?)%\}/g, (str) => {
-          const replacementLength = str.length - 2; // Adjusting for the length of '{%' and '%}'
+        sanitizedText = sanitizedText.replace(/\{%([^\r\n]*?)%\}/g, function (str) {
+          var replacementLength = str.length - 2; // Adjusting for the length of '{%' and '%}'
           uniqueCounter++;
-          const uniqueID = uniqueCounter
-            .toString()
-            .padStart(replacementLength - 2, "0");
+          var uniqueID = uniqueCounter.toString().padStart(replacementLength - 2, "0");
           return "//" + uniqueID + "//"; // Comment-style placeholder
         });
 
         // Handling {# #} comment blocks on single lines
-        sanitizedText = sanitizedText.replace(/\{#([^\r\n]*?)#\}/g, (str) => {
-          const replacementLength = str.length - 2; // Adjusting for the length of '{#' and '#}'
+        sanitizedText = sanitizedText.replace(/\{#([^\r\n]*?)#\}/g, function (str) {
+          var replacementLength = str.length - 2; // Adjusting for the length of '{#' and '#}'
           uniqueCounter++;
-          const uniqueID = uniqueCounter
-            .toString()
-            .padStart(replacementLength - 2, "0");
+          var uniqueID = uniqueCounter.toString().padStart(replacementLength - 2, "0");
           return "/*" + uniqueID + "*/"; // Using block comment style for placeholder
         });
 
         // Handling unmatched start tags
-        sanitizedText = sanitizedText.replace(
-          /^\{\{|\{%|\{#(?![\s\S]*?\}\}|%}|#})/gm,
-          "/*",
-        );
+        sanitizedText = sanitizedText.replace(/^\{\{|\{%|\{#(?![\s\S]*?\}\}|%}|#})/gm, "/*");
 
         // Handling unmatched end tags
-        sanitizedText = sanitizedText.replace(
-          /^\}\}|%}|#}(?<!\{\{|\{%|\{#[\s\S]*?)/gm,
-          "*/",
-        );
+        sanitizedText = sanitizedText.replace(/^\}\}|%}|#}(?<!\{\{|\{%|\{#[\s\S]*?)/gm, "*/");
 
         // Store original and sanitized content in map
         fileContentMap.set(filename, {
           original: text,
-          sanitized: sanitizedText,
+          sanitized: sanitizedText
         });
 
         // Are we debugging?
@@ -124,47 +111,45 @@ module.exports = {
         return [sanitizedText];
       },
 
-      postprocess(messages, filename) {
-        const flattenedMessages = messages.flat();
-        const { original, sanitized } = fileContentMap.get(filename);
+      postprocess: function postprocess(messages, filename) {
+        var flattenedMessages = messages.flat();
 
-        flattenedMessages.forEach((message) => {
+        var _fileContentMap$get = fileContentMap.get(filename);
+
+        var original = _fileContentMap$get.original;
+        var sanitized = _fileContentMap$get.sanitized;
+
+        flattenedMessages.forEach(function (message) {
           if (message.fix) {
-            let fixText = message.fix.text;
-            // Regex to find all unique IDs in fix text for all patterns
-            const uniqueIDs = fixText.match(
-              /(\/\d+\/)|(\/\/\d+\/\/)|(\/\*\d+\*\/)/g,
-            );
+            (function () {
+              var fixText = message.fix.text;
+              // Regex to find all unique IDs in fix text for all patterns
+              var uniqueIDs = fixText.match(/(\/\d+\/)|(\/\/\d+\/\/)|(\/\*\d+\*\/)/g);
 
-            if (uniqueIDs) {
-              uniqueIDs.forEach((uniqueIDTag) => {
-                const sanitizedRegex = new RegExp(`\\${uniqueIDTag}`, "g"); // Use the full tag for regex
+              if (uniqueIDs) {
+                uniqueIDs.forEach(function (uniqueIDTag) {
+                  var sanitizedRegex = new RegExp("\\" + uniqueIDTag, "g"); // Use the full tag for regex
 
-                let match;
-                while ((match = sanitizedRegex.exec(sanitized)) !== null) {
-                  const startIndex = match.index;
-                  const endIndex = match.index + match[0].length;
-                  const originalContent = original.substring(
-                    startIndex,
-                    endIndex,
-                  ); // Extract original content from the same position
+                  var match = undefined;
+                  while ((match = sanitizedRegex.exec(sanitized)) !== null) {
+                    var startIndex = match.index;
+                    var endIndex = match.index + match[0].length;
+                    var originalContent = original.substring(startIndex, endIndex); // Extract original content from the same position
 
-                  // Replace the unique ID in the fix text with the extracted original content
-                  fixText = fixText.replace(
-                    new RegExp(`\\${uniqueIDTag}`, "g"),
-                    originalContent,
-                  );
-                }
-              });
-              message.fix.text = fixText; // Update fix text with all replacements done
-            }
+                    // Replace the unique ID in the fix text with the extracted original content
+                    fixText = fixText.replace(new RegExp("\\" + uniqueIDTag, "g"), originalContent);
+                  }
+                });
+                message.fix.text = fixText; // Update fix text with all replacements done
+              }
+            })();
           }
         });
 
         return flattenedMessages;
       },
 
-      supportsAutofix: true,
-    },
-  },
+      supportsAutofix: true
+    }
+  }
 };

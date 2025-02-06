@@ -15,7 +15,7 @@ configuration. See
 [ESLint documentation](http://eslint.org/docs/user-guide/configuring#configuring-plugins).
 
 <details open>
-  <summary>Example with ESLint 9 and above (flat config)</summary>
+  <summary>Example with ESLint 9 and above</summary>
 
 ```javascript
 import html from "eslint-plugin-html"
@@ -24,13 +24,14 @@ export default [
   {
     files: ["**/*.html"],
     plugins: { html, twig },
-  },
+    processor: "twig/ twig",
+},
 ]
 ```
 
 </details>
 
-<details>
+<details open>
   <summary>Example with ESLint 8 and below</summary>
 
 ```json
@@ -77,6 +78,19 @@ By placing the following statement in your .twig file, the preprocessed output w
 ```
 
 ## Known issues
+
+### Prettier fixes won't be applied
+
+If you are processing Twig templates as HTML files, then your Javascript segments shouldn't follow the Twig indentation but start from the left as if it was a regular .js file.
+
+```html
+<script>
+// Do this
+</script>
+    <script>
+    // Not this
+    </script>
+```
 
 ### Unreachable code
 ```html
