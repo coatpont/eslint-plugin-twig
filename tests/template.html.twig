@@ -18,6 +18,7 @@
         console.log('hello world');
         var text = '{{ someText }}';
         globalFunction("{{'message1'}}", "{{'message2'}}", "text");
+        var loopIndex{{ loop.index }} = "something";
         {% include('otherTemplate.js.twig') %}
         {{ include('includedTemplate.js.twig') }}
         {% set header = include('header.html') %}

@@ -67,6 +67,13 @@ module.exports = {
           return "/" + uniqueID + "/"; // Using slashes to encapsulate the unique ID, mimicking the style used for other Twig blocks
         });
 
+        // Handling {{ loop.index }} to replace with a compatible JavaScript variable placeholder - no need to process but will trigger an no-unused-vars error necessarily
+        sanitizedText = sanitizedText.replace(/\{\{\s*loop.index\s*\}\}/g, function (match) {
+          var placeholder = 'index' + uniqueCounter++; // Increment to ensure uniqueness
+          var replacement = placeholder.padEnd(match.length, '_'); // Pad with underscores to match the length of '{{ loop.index }}'
+          return replacement;
+        });
+
         // Handling {{ variable }} expressions, ignoring escaped '{{' and '}}'
         sanitizedText = sanitizedText.replace(/\{\{(.*?)\}\}/g, function (str) {
           var replacementLength = str.length - 2; // Adjusting for the length of '{{' and '}}'
@@ -138,6 +145,7 @@ module.exports = {
 
                     // Replace the unique ID in the fix text with the extracted original content
                     fixText = fixText.replace(new RegExp("\\" + uniqueIDTag, "g"), originalContent);
+                    console.log(fixText);
                   }
                 });
                 message.fix.text = fixText; // Update fix text with all replacements done
