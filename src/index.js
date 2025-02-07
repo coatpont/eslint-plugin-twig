@@ -145,7 +145,6 @@ module.exports = {
 
                     // Replace the unique ID in the fix text with the extracted original content
                     fixText = fixText.replace(new RegExp("\\" + uniqueIDTag, "g"), originalContent);
-                    console.log(fixText);
                   }
                 });
                 message.fix.text = fixText; // Update fix text with all replacements done
