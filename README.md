@@ -98,7 +98,7 @@ If you are processing Twig templates as HTML files, then your Javascript segment
 {% if someCondition %}
   return something;
 {% else %}
-  return somethingElse; // This line will trigger the unreachable rule - use eslint-disable-link
+  return somethingElse; // This line will trigger the unreachable rule - use eslint-disable-line no-unreachable
 {% endif %}
 </script>
 ```
