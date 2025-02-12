@@ -3,10 +3,10 @@
 This plugin treats Twig template expressions and statements as valid Javascript expressions, so that ESLint can check javascript code, ignoring any Twig expression found.
 
 ## Obvious statement
-It is highly recommended to avoid using plain JavaScript in Twig templates, and rely on standard WebPack mechanics to process and to optimized JavaScript code. However, in some legacy Symfony applications, JavaScript is present "en masse" in Twig templates, being html templates or templates generating JavaScript. This plug aims at processing this code 
+It is highly recommended to avoid using plain JavaScript in Twig templates, and rely on standard WebPack mechanics to process and to optimized JavaScript code. However, in some legacy Symfony applications, JavaScript is present "en masse" in Twig templates, being html templates or templates generating JavaScript. This plug aims at processing and correcting this code when possible with the standard --fix approach. 
 
 ## Work in progress
-This plugin is still being developed and tested
+This plugin is still being developed and tested. Currently looking for other adopters.
 
 ## Usage
 
